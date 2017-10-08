@@ -57,27 +57,39 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
     reg_init = 0.001
     
     conv3 = tf.layers.conv2d(vgg_layer7_out, num_classes, 1, padding='same',
-                             kernel_initializer= tf.random_normal_initializer(stddev=norm_init),
-                             kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init))
+                             kernel_initializer=tf.random_normal_initializer(stddev=norm_init),
+                             kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init),
+                             bias_initializer=tf.zeros_initializer(),
+                             bias_regularizer=None)
     conv2 = tf.layers.conv2d(vgg_layer4_out, num_classes, 1, padding='same', 
-                             kernel_initializer= tf.random_normal_initializer(stddev=norm_init),
-                             kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init))
+                             kernel_initializer=tf.random_normal_initializer(stddev=norm_init),
+                             kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init),
+                             bias_initializer=tf.zeros_initializer(),
+                             bias_regularizer=None)
     conv1 = tf.layers.conv2d(vgg_layer3_out, num_classes, 1, padding='same', 
-                             kernel_initializer= tf.random_normal_initializer(stddev=norm_init),
-                             kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init))
+                             kernel_initializer=tf.random_normal_initializer(stddev=norm_init),
+                             kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init),
+                             bias_initializer=tf.zeros_initializer(),
+                             bias_regularizer=None)
     
     
     dec3 = tf.layers.conv2d_transpose(conv3, num_classes, 4, 2, padding='same', 
-                                      kernel_initializer= tf.random_normal_initializer(stddev=norm_init),
-                                      kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init))
+                                      kernel_initializer=tf.random_normal_initializer(stddev=norm_init),
+                                      kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init),
+                                      bias_initializer=tf.zeros_initializer(),
+                                      bias_regularizer=None)
     add2 = tf.add(dec3, conv2)
     dec2 = tf.layers.conv2d_transpose(add2, num_classes, 4, 2, padding='same', 
-                                      kernel_initializer= tf.random_normal_initializer(stddev=norm_init),
-                                      kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init))
+                                      kernel_initializer=tf.random_normal_initializer(stddev=norm_init),
+                                      kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init),
+                                      bias_initializer=tf.zeros_initializer(),
+                                      bias_regularizer=None)
     add1 = tf.add(dec2, conv1)
     dec1 = tf.layers.conv2d_transpose(add1, num_classes, 16, 8, padding='same', 
-                                      kernel_initializer= tf.random_normal_initializer(stddev=norm_init),
-                                      kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init))
+                                      kernel_initializer=tf.random_normal_initializer(stddev=norm_init),
+                                      kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init),
+                                      bias_initializer=tf.zeros_initializer(),
+                                      bias_regularizer=None)
     
     return dec1
 tests.test_layers(layers)
