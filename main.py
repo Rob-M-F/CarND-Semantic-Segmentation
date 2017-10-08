@@ -57,39 +57,30 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
     reg_init = 0.001
     
     conv3 = tf.layers.conv2d(vgg_layer7_out, num_classes, 1, padding='same',
-                             kernel_initializer=tf.random_normal_initializer(stddev=norm_init),
-                             kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init),
-                             bias_initializer=tf.zeros_initializer(),
-                             bias_regularizer=None)
-    conv2 = tf.layers.conv2d(vgg_layer4_out, num_classes, 1, padding='same', 
-                             kernel_initializer=tf.random_normal_initializer(stddev=norm_init),
-                             kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init),
-                             bias_initializer=tf.zeros_initializer(),
-                             bias_regularizer=None)
-    conv1 = tf.layers.conv2d(vgg_layer3_out, num_classes, 1, padding='same', 
-                             kernel_initializer=tf.random_normal_initializer(stddev=norm_init),
-                             kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init),
-                             bias_initializer=tf.zeros_initializer(),
-                             bias_regularizer=None)
+                             kernel_initializer=tf.random_normal_initializer(stddev=norm_init), 
+                             kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init))
+
+    conv2 = tf.layers.conv2d(vgg_layer4_out, num_classes, 1, padding='same',
+                             kernel_initializer=tf.random_normal_initializer(stddev=norm_init), 
+                             kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init))
+
+    conv1 = tf.layers.conv2d(vgg_layer3_out, num_classes, 1, padding='same',
+                             kernel_initializer=tf.random_normal_initializer(stddev=norm_init), 
+                             kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init))
     
+    dec3 = tf.layers.conv2d_transpose(conv3, num_classes, 4, 2, padding='same',
+                             kernel_initializer=tf.random_normal_initializer(stddev=norm_init), 
+                             kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init))
     
-    dec3 = tf.layers.conv2d_transpose(conv3, num_classes, 4, 2, padding='same', 
-                                      kernel_initializer=tf.random_normal_initializer(stddev=norm_init),
-                                      kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init),
-                                      bias_initializer=tf.zeros_initializer(),
-                                      bias_regularizer=None)
     add2 = tf.add(dec3, conv2)
-    dec2 = tf.layers.conv2d_transpose(add2, num_classes, 4, 2, padding='same', 
-                                      kernel_initializer=tf.random_normal_initializer(stddev=norm_init),
-                                      kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init),
-                                      bias_initializer=tf.zeros_initializer(),
-                                      bias_regularizer=None)
+    dec2 = tf.layers.conv2d_transpose(add2, num_classes, 4, 2, padding='same',
+                             kernel_initializer=tf.random_normal_initializer(stddev=norm_init), 
+                             kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init))
+
     add1 = tf.add(dec2, conv1)
-    dec1 = tf.layers.conv2d_transpose(add1, num_classes, 16, 8, padding='same', 
-                                      kernel_initializer=tf.random_normal_initializer(stddev=norm_init),
-                                      kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init),
-                                      bias_initializer=tf.zeros_initializer(),
-                                      bias_regularizer=None)
+    dec1 = tf.layers.conv2d_transpose(add1, num_classes, 16, 8, padding='same',
+                             kernel_initializer=tf.random_normal_initializer(stddev=norm_init), 
+                             kernel_regularizer=tf.contrib.layers.l2_regularizer(reg_init))
     
     return dec1
 tests.test_layers(layers)
@@ -127,16 +118,19 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
     :param keep_prob: TF Placeholder for dropout keep probability
     :param learning_rate: TF Placeholder for learning rate
     """
+    batches = 1
     for e in range(epochs):
-        lr = 0.001*0.75**e
-        print("Epoch:\t{},\tLearning Rate:\t{:.5f}".format(e+1, lr))
+        print("")
+        print("Epoch\t\tBatch\t\tLearn Rate\t\tloss")
         for b, (data, truth) in enumerate(get_batches_fn(batch_size)):
-            _, train_loss = sess.run([train_op, cross_entropy_loss], feed_dict={input_image:data, 
-                                                                                correct_label:truth, 
-                                                                                keep_prob:0.5, 
+            if b > batches: batches = b
+            lr = 0.00005 #1 / ((e*batches + b)*10 + 500)
+            _, train_loss = sess.run([train_op, cross_entropy_loss], feed_dict={input_image:data,
+                                                                                correct_label:truth,
+                                                                                keep_prob:0.5,
                                                                                 learning_rate:lr})
             if (b%10 == 0):
-                print("Training batch\t{:3.0f}\tloss\t{:.5f}".format(b+1, train_loss))
+                print("{}\t\t{:3.0f}\t\t{:.7f}\t\t{:.5f}".format(e+1, b+1, lr, train_loss))
 tests.test_train_nn(train_nn)
 
 
