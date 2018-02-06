@@ -1,36 +1,17 @@
 # Semantic Segmentation
-### Introduction
-In this project, you'll label the pixels of a road in images using a Fully Convolutional Network (FCN).
+This project identifies areas of roadway present in provided images. The project was trained and tested using the [Kitti Road dataset](http://www.cvlibs.net/datasets/kitti/eval_road.php) and the pre-trained network weights from a modified, fully convolutional variant of the VGG16 model.  
 
-### Setup
-##### Frameworks and Packages
-Make sure you have the following is installed:
- - [Python 3](https://www.python.org/)
- - [TensorFlow](https://www.tensorflow.org/)
- - [NumPy](http://www.numpy.org/)
- - [SciPy](https://www.scipy.org/)
-##### Dataset
-Download the [Kitti Road dataset](http://www.cvlibs.net/datasets/kitti/eval_road.php) from [here](http://www.cvlibs.net/download.php?file=data_road.zip).  Extract the dataset in the `data` folder.  This will create the folder `data_road` with all the training a test images.
+### Prerequisites  
+ - [Python 3](https://www.python.org/)  
+ - [TensorFlow](https://www.tensorflow.org/)  
+ - [NumPy](http://www.numpy.org/)  
+ - [SciPy](https://www.scipy.org/)  
 
-### Start
-##### Implement
-Implement the code in the `main.py` module indicated by the "TODO" comments.
-The comments indicated with "OPTIONAL" tag are not required to complete.
-##### Run
-Run the following command to run the project:
-```
-python main.py
-```
-**Note** If running this in Jupyter Notebook system messages, such as those regarding test status, may appear in the terminal rather than the notebook.
+## Quick Start  
+Run the following command to run the project:  
+```  
+python main.py  
+```  
 
-### Submission
-1. Ensure you've passed all the unit tests.
-2. Ensure you pass all points on [the rubric](https://review.udacity.com/#!/rubrics/989/view).
-3. Submit the following in a zip file.
- - `helper.py`
- - `main.py`
- - `project_tests.py`
- - Newest inference images from `runs` folder  (**all images from the most recent run**)
- 
- ## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+## Documentation  
+This implementation of Semantic Segmentation uses pre-trained weights from a variant of the VGG16 deep neural network model where 1x1 convolutional layers are used in place of fully connected layers in the original model. These pre-trained weights are used to initialize a similarly structured classifier aimed at identifying road surfaces in images. The final result excludes most non-road surfaces and includes most road surfaces.
